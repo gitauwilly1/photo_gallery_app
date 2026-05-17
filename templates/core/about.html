@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - PhotoGallery{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">About PhotoGallery</h1>
+        <p class="text-xl text-gray-600">Where photography meets community</p>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Our Mission</h2>
+        <p class="text-gray-700 leading-relaxed mb-6">
+            PhotoGallery is dedicated to creating a vibrant community where photographers of all skill levels 
+            can showcase their work, discover inspiration, and connect with fellow photography enthusiasts. 
+            We believe that every photo tells a unique story, and we're here to help share those stories with the world.
+        </p>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">What We Offer</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="text-center">
+                <svg class="h-12 w-12 text-primary-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <h3 class="font-semibold text-gray-900 mb-2">Showcase Your Work</h3>
+                <p class="text-gray-600 text-sm">Upload and share your best photos with the community</p>
+            </div>
+            <div class="text-center">
+                <svg class="h-12 w-12 text-primary-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <h3 class="font-semibold text-gray-900 mb-2">Discover Inspiration</h3>
+                <p class="text-gray-600 text-sm">Explore thousands of stunning photos from talented photographers</p>
+            </div>
+            <div class="text-center">
+                <svg class="h-12 w-12 text-primary-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                <h3 class="font-semibold text-gray-900 mb-2">Build Connections</h3>
+                <p class="text-gray-600 text-sm">Engage with photographers, share feedback, and grow together</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-gray-100 rounded-xl p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">Our Community Stats</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+            <div>
+                <div class="text-3xl font-bold text-primary-600">500+</div>
+                <div class="text-gray-600">Active Users</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-primary-600">5,000+</div>
+                <div class="text-gray-600">Photos Uploaded</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-primary-600">50K+</div>
+                <div class="text-gray-600">Total Likes</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-primary-600">10K+</div>
+                <div class="text-gray-600">Comments</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
