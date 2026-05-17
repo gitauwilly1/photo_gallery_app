@@ -1,7 +1,3 @@
-"""
-Views for user authentication, profile management, and RBAC
-"""
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView, UpdateView, DetailView
@@ -20,7 +16,7 @@ from .forms import (
     UserRegistrationForm, UserLoginForm, UserProfileForm, 
     UserPasswordChangeForm, UserRoleChangeForm
 )
-from gallery.models import Photo, Like, Comment
+# from gallery.models import Photo, Like, Comment
 from django.core.exceptions import PermissionDenied
 
 
@@ -161,14 +157,16 @@ class ProfileView(LoginRequiredMixin, DetailView):
     slug_field = 'username'
     slug_url_kwarg = 'username'
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        profile_user = self.get_object()
+def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    profile_user = self.get_object()
+    
+    context['is_own_profile'] = (profile_user == self.request.user)
+    
+    # Temporarily handle missing gallery models
+    try:
+        from gallery.models import Photo, Like, Comment
         
-        # Check if viewing own profile
-        context['is_own_profile'] = (profile_user == self.request.user)
-        
-        # Get user's recent photos
         if profile_user.role in [UserRoles.ADMIN, UserRoles.ARTIST]:
             context['recent_photos'] = Photo.objects.filter(
                 user=profile_user,
@@ -178,22 +176,20 @@ class ProfileView(LoginRequiredMixin, DetailView):
                 user=profile_user, is_approved=True
             ).count()
         
-        # Get user's likes
         context['total_likes'] = Like.objects.filter(user=profile_user).count()
-        
-        # Get user's comments
         context['total_comments'] = Comment.objects.filter(user=profile_user).count()
-        
-        # Profile completion
-        context['profile_completion'] = profile_user.get_profile_completion_percentage()
-        
-        # Activity summary
-        context['recent_activities'] = UserActivityLog.objects.filter(
-            user=profile_user
-        ).order_by('-timestamp')[:10]
-        
-        return context
-
+    except ImportError:
+        context['recent_photos'] = []
+        context['total_photos'] = 0
+        context['total_likes'] = 0
+        context['total_comments'] = 0
+    
+    context['profile_completion'] = profile_user.get_profile_completion_percentage()
+    context['recent_activities'] = UserActivityLog.objects.filter(
+        user=profile_user
+    ).order_by('-timestamp')[:10]
+    
+    return context
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):
     
