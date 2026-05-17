@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gallery - PhotoGallery{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Photo Gallery</h1>
+        <p class="text-gray-600">Discover stunning photography from our community</p>
+    </div>
+    
+    <!-- Search and Filter Bar -->
+    <div class="bg-white rounded-lg shadow-md p-4 mb-8">
+        <div class="flex flex-col md:flex-row gap-4">
+            <!-- Search -->
+            <div class="flex-1">
+                <form method="GET" action="{% url 'gallery:search' %}" class="relative">
+                    <input type="text" name="q" placeholder="Search photos by title, description or tags..." 
+                           value="{{ search_query }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <button type="submit" class="absolute right-3 top-2 text-gray-400 hover:text-primary-600">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Filter by tag dropdown -->
+            <div class="md:w-64">
+                <select onchange="location.href=this.value" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                    <option value="{% url 'gallery:gallery' %}">All Photos</option>
+                    {% for tag in all_tags %}
+                    <option value="{% url 'gallery:tag_filter' tag.slug %}" {% if tag_filter and tag_filter.slug == tag.slug %}selected{% endif %}>
+                        {{ tag.name }} ({{ tag.photo_count }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <!-- Active Filters -->
+        {% if tag_filter %}
+        <div class="mt-4 flex items-center">
+            <span class="text-sm text-gray-600 mr-2">Filtered by:</span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
+                <i class="fas fa-tag mr-1"></i>{{ tag_filter.name }}
+                <a href="{% url 'gallery:gallery' %}" class="ml-2 hover:text-primary-600">
+                    <i class="fas fa-times"></i>
+                </a>
+            </span>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Photo Grid -->
+    {% if photos %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for photo in photos %}
+        <div class="bg-white rounded-lg overflow-hidden shadow-md photo-card group">
+            <div class="relative overflow-hidden">
+                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" 
+                     class="w-full h-64 object-cover group-hover:scale-110 transition duration-300">
+                
+                <!-- Overlay on hover -->
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <a href="{% url 'gallery:photo_detail' photo.slug %}" 
+                       class="bg-white text-gray-900 px-4 py-2 rounded-lg transform -translate-y-2 group-hover:translate-y-0 transition duration-300">
+                        <i class="fas fa-eye mr-2"></i>View Details
+                    </a>
+                </div>
+            </div>
+            
+            <div class="p-4">
+                <h3 class="font-semibold text-gray-900 mb-1 truncate">{{ photo.title }}</h3>
+                <p class="text-gray-600 text-sm mb-2">by {{ photo.user.username }}</p>
+                
+                <!-- Tags -->
+                {% if photo.tags.all %}
+                <div class="flex flex-wrap gap-1 mb-3">
+                    {% for tag in photo.tags.all|slice:":3" %}
+                    <a href="{% url 'gallery:tag_filter' tag.slug %}" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded hover:bg-primary-100 hover:text-primary-600 transition">
+                        {{ tag.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Stats -->
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-gray-500">
+                            <i class="fas fa-heart text-red-500"></i> {{ photo.likes_count }}
+                        </span>
+                        <span class="text-gray-500">
+                            <i class="fas fa-comment"></i> {{ photo.comments_count }}
+                        </span>
+                        <span class="text-gray-500">
+                            <i class="fas fa-eye"></i> {{ photo.views_count }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-8 flex justify-center">
+        <nav class="flex items-center space-x-2">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if tag_filter %}&tag={{ tag_filter.slug }}{% endif %}" 
+               class="px-3 py-2 rounded border border-gray-300 hover:bg-gray-50">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="px-3 py-2 rounded bg-primary-600 text-white">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}{% if tag_filter %}&tag={{ tag_filter.slug }}{% endif %}" 
+                   class="px-3 py-2 rounded border border-gray-300 hover:bg-gray-50">
+                    {{ num }}
+                </a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if tag_filter %}&tag={{ tag_filter.slug }}{% endif %}" 
+               class="px-3 py-2 rounded border border-gray-300 hover:bg-gray-50">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <!-- No Results -->
+    <div class="text-center py-16">
+        <svg class="mx-auto h-24 w-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">No photos found</h3>
+        <p class="mt-1 text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+        {% if user.can_upload %}
+        <div class="mt-6">
+            <a href="{% url 'gallery:photo_upload' %}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
+                <i class="fas fa-upload mr-2"></i>
+                Upload your first photo
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
