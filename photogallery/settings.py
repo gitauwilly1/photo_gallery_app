@@ -73,7 +73,7 @@ DATABASES = {
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT),
+        'PORT': config('DB_PORT'),
     }
 }
 
@@ -176,3 +176,43 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+# Google OAuth Settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_SECRET_KEY'),
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
+}
+
+# Role-Based Access Control Constants
+class UserRoles:
+    ADMIN = 'admin'
+    MODERATOR = 'moderator'
+    ARTIST = 'artist'
+    VIEWER = 'viewer'
+    
+    CHOICES = [
+        (ADMIN, 'Administrator'),
+        (MODERATOR, 'Moderator'),
+        (ARTIST, 'Artist'),
+        (VIEWER, 'Viewer'),
+    ]
+    
+    PERMISSIONS = {
+        ADMIN: ['can_delete_all', 'can_edit_all', 'can_manage_users', 'can_approve_photos'],
+        MODERATOR: ['can_edit_all', 'can_approve_photos', 'can_delete_inappropriate'],
+        ARTIST: ['can_upload_photos', 'can_edit_own', 'can_delete_own'],
+        VIEWER: ['can_view_photos', 'can_like_photos', 'can_comment'],
+    }
