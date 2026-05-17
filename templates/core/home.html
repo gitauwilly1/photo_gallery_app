@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - PhotoGallery{% endblock %}
+
+{% block content %}
+<div class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">
+            Discover Amazing Photography
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 opacity-90">
+            Explore thousands of stunning photos from talented photographers worldwide
+        </p>
+        <div class="flex justify-center space-x-4">
+            <a href="{% url 'gallery:gallery' %}" class="bg-white text-gray-900 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition transform hover:scale-105">
+                <i class="fas fa-images mr-2"></i>Explore Gallery
+            </a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:register' %}" class="bg-transparent border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition transform hover:scale-105">
+                <i class="fas fa-user-plus mr-2"></i>Join Now
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Featured Photos -->
+{% if featured_photos %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Photos</h2>
+        <p class="text-gray-600">Curated selection of exceptional photography</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for photo in featured_photos %}
+        <div class="group relative overflow-hidden rounded-lg shadow-lg photo-card">
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-300">
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
+                <div class="absolute bottom-0 left-0 right-0 p-4">
+                    <h3 class="text-white font-semibold">{{ photo.title }}</h3>
+                    <p class="text-gray-300 text-sm">by {{ photo.user.username }}</p>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <span class="text-white text-sm"><i class="fas fa-heart mr-1"></i>{{ photo.likes_count }}</span>
+                        <span class="text-white text-sm"><i class="fas fa-eye mr-1"></i>{{ photo.views_count }}</span>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'gallery:photo_detail' photo.slug %}" class="absolute inset-0"></a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Categories / Popular Tags -->
+{% if popular_tags %}
+<div class="bg-gray-100 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Popular Tags</h2>
+            <p class="text-gray-600">Explore photos by category</p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-3">
+            {% for tag in popular_tags %}
+            <a href="{% url 'gallery:tag_filter' tag.slug %}" class="bg-white px-4 py-2 rounded-full text-gray-700 hover:bg-primary-600 hover:text-white transition shadow-sm">
+                <i class="fas fa-tag mr-1"></i>{{ tag.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Recent Uploads -->
+{% if recent_photos %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Recent Uploads</h2>
+        <p class="text-gray-600">Latest photos from our community</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for photo in recent_photos %}
+        <div class="bg-white rounded-lg overflow-hidden shadow-md photo-card">
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="font-semibold text-gray-900 mb-1 truncate">{{ photo.title }}</h3>
+                <p class="text-gray-600 text-sm mb-2">by {{ photo.user.username }}</p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-gray-500 text-sm"><i class="fas fa-heart"></i> {{ photo.likes_count }}</span>
+                        <span class="text-gray-500 text-sm"><i class="fas fa-comment"></i> {{ photo.comments_count }}</span>
+                    </div>
+                    <a href="{% url 'gallery:photo_detail' photo.slug %}" class="text-primary-600 hover:text-primary-700 text-sm font-semibold">
+                        View <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-8">
+        <a href="{% url 'gallery:gallery' %}" class="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition">
+            View All Photos <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
