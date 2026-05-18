@@ -16,7 +16,6 @@ from .forms import (
     UserRegistrationForm, UserLoginForm, UserProfileForm, 
     UserPasswordChangeForm, UserRoleChangeForm
 )
-from gallery.models import Photo, Like, Comment
 from django.core.exceptions import PermissionDenied
 
 
@@ -157,48 +156,64 @@ class ProfileView(LoginRequiredMixin, DetailView):
     slug_field = 'username'
     slug_url_kwarg = 'username'
     
-def get_context_data(self, **kwargs):
-    context = super().get_context_data(**kwargs)
-    profile_user = self.get_object()
+    def get_object(self, queryset=None):
+        """Get the user by username"""
+        username = self.kwargs.get(self.slug_url_kwarg)
+        if username:
+            return get_object_or_404(User, username=username)
+        # If no username provided, return current user
+        return self.request.user
     
-    context['is_own_profile'] = (profile_user == self.request.user)
-    
-    # Temporarily handle missing gallery models
-    try:
-        from gallery.models import Photo, Like, Comment
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile_user = self.get_object()
         
-        if profile_user.role in [UserRoles.ADMIN, UserRoles.ARTIST]:
-            context['recent_photos'] = Photo.objects.filter(
-                user=profile_user,
-                is_approved=True
-            ).order_by('-created_at')[:6]
-            context['total_photos'] = Photo.objects.filter(
-                user=profile_user, is_approved=True
-            ).count()
+        # Check if viewing own profile
+        context['is_own_profile'] = (profile_user == self.request.user)
         
-        context['total_likes'] = Like.objects.filter(user=profile_user).count()
-        context['total_comments'] = Comment.objects.filter(user=profile_user).count()
-    except ImportError:
-        context['recent_photos'] = []
-        context['total_photos'] = 0
-        context['total_likes'] = 0
-        context['total_comments'] = 0
-    
-    context['profile_completion'] = profile_user.get_profile_completion_percentage()
-    context['recent_activities'] = UserActivityLog.objects.filter(
-        user=profile_user
-    ).order_by('-timestamp')[:10]
-    
-    return context
+        # Get user's recent photos - handle import error gracefully
+        try:
+            from gallery.models import Photo, Like, Comment
+            
+            if profile_user.role in [UserRoles.ADMIN, UserRoles.ARTIST]:
+                context['recent_photos'] = Photo.objects.filter(
+                    user=profile_user,
+                    is_approved=True
+                ).order_by('-created_at')[:6]
+                context['total_photos'] = Photo.objects.filter(
+                    user=profile_user, is_approved=True
+                ).count()
+            else:
+                context['recent_photos'] = []
+                context['total_photos'] = 0
+            
+            context['total_likes'] = Like.objects.filter(user=profile_user).count()
+            context['total_comments'] = Comment.objects.filter(user=profile_user).count()
+        except:
+            context['recent_photos'] = []
+            context['total_photos'] = 0
+            context['total_likes'] = 0
+            context['total_comments'] = 0
+        
+        # Profile completion
+        context['profile_completion'] = profile_user.get_profile_completion_percentage()
+        
+        # Activity summary
+        context['recent_activities'] = UserActivityLog.objects.filter(
+            user=profile_user
+        ).order_by('-timestamp')[:10]
+        
+        return context
+
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):
     
     model = User
     form_class = UserProfileForm
     template_name = 'accounts/profile_edit.html'
-    success_url = reverse_lazy('accounts:profile')
     
     def get_object(self, queryset=None):
+        """Return the current user for editing"""
         return self.request.user
     
     def get_success_url(self):
@@ -218,6 +233,10 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
         
         messages.success(self.request, 'Your profile has been updated successfully!')
         return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please correct the errors below.')
+        return super().form_invalid(form)
 
 
 class ChangePasswordView(LoginRequiredMixin, View):
@@ -262,13 +281,25 @@ class UserDashboardView(LoginRequiredMixin, TemplateView):
             user=user
         ).order_by('-timestamp')[:15]
         
-        # Statistics
-        context['stats'] = {
-            'photos_uploaded': Photo.objects.filter(user=user).count(),
-            'photos_liked': Like.objects.filter(user=user).count(),
-            'comments_made': Comment.objects.filter(user=user).count(),
-            'profile_views': 0,  # Would need a view tracking model
-        }
+        # Profile completion
+        context['profile_completion'] = user.get_profile_completion_percentage()
+        
+        # Statistics - handle import errors
+        try:
+            from gallery.models import Photo, Like, Comment
+            context['stats'] = {
+                'photos_uploaded': Photo.objects.filter(user=user).count(),
+                'photos_liked': Like.objects.filter(user=user).count(),
+                'comments_made': Comment.objects.filter(user=user).count(),
+                'profile_views': 0,
+            }
+        except:
+            context['stats'] = {
+                'photos_uploaded': 0,
+                'photos_liked': 0,
+                'comments_made': 0,
+                'profile_views': 0,
+            }
         
         return context
 
@@ -288,15 +319,25 @@ class AdminDashboardView(LoginRequiredMixin, RoleRequiredMixin, TemplateView):
         context['total_artists'] = User.objects.filter(role=UserRoles.ARTIST).count()
         context['total_viewers'] = User.objects.filter(role=UserRoles.VIEWER).count()
         
-        # Content statistics
-        context['total_photos'] = Photo.objects.count()
-        context['pending_photos'] = Photo.objects.filter(is_approved=False).count()
-        context['total_likes'] = Like.objects.count()
-        context['total_comments'] = Comment.objects.count()
+        # Content statistics - handle import errors
+        try:
+            from gallery.models import Photo, Like, Comment
+            context['total_photos'] = Photo.objects.count()
+            context['pending_photos'] = Photo.objects.filter(is_approved=False).count()
+            context['total_likes'] = Like.objects.count()
+            context['total_comments'] = Comment.objects.count()
+        except:
+            context['total_photos'] = 0
+            context['pending_photos'] = 0
+            context['total_likes'] = 0
+            context['total_comments'] = 0
         
         # Recent activity
         context['recent_users'] = User.objects.order_by('-date_joined')[:10]
-        context['recent_photos'] = Photo.objects.order_by('-created_at')[:10]
+        try:
+            context['recent_photos'] = Photo.objects.order_by('-created_at')[:10]
+        except:
+            context['recent_photos'] = []
         context['recent_activities'] = UserActivityLog.objects.order_by('-timestamp')[:20]
         
         return context
@@ -311,16 +352,29 @@ class ModeratorDashboardView(LoginRequiredMixin, RoleRequiredMixin, TemplateView
         context = super().get_context_data(**kwargs)
         
         # Pending content for moderation
-        context['pending_photos'] = Photo.objects.filter(is_approved=False)[:20]
-        context['reported_content'] = []  # Would need reporting feature
+        try:
+            from gallery.models import Photo
+            context['pending_photos'] = Photo.objects.filter(is_approved=False)[:20]
+        except:
+            context['pending_photos'] = []
+        context['reported_content'] = []
         
         # Statistics
-        context['stats'] = {
-            'total_photos': Photo.objects.count(),
-            'approved_photos': Photo.objects.filter(is_approved=True).count(),
-            'pending_approval': Photo.objects.filter(is_approved=False).count(),
-            'total_users': User.objects.count(),
-        }
+        try:
+            from gallery.models import Photo
+            context['stats'] = {
+                'total_photos': Photo.objects.count(),
+                'approved_photos': Photo.objects.filter(is_approved=True).count(),
+                'pending_approval': Photo.objects.filter(is_approved=False).count(),
+                'total_users': User.objects.count(),
+            }
+        except:
+            context['stats'] = {
+                'total_photos': 0,
+                'approved_photos': 0,
+                'pending_approval': 0,
+                'total_users': User.objects.count(),
+            }
         
         return context
 
@@ -335,15 +389,26 @@ class ArtistDashboardView(LoginRequiredMixin, RoleRequiredMixin, TemplateView):
         user = self.request.user
         
         # Artist's photos
-        context['user_photos'] = Photo.objects.filter(user=user).order_by('-created_at')
-        
-        # Statistics for artist's content
-        context['stats'] = {
-            'total_photos': Photo.objects.filter(user=user).count(),
-            'total_likes': Like.objects.filter(photo__user=user).count(),
-            'total_views': 0,  # Would need view tracking
-            'total_comments': Comment.objects.filter(photo__user=user).count(),
-        }
+        try:
+            from gallery.models import Photo, Like, Comment
+            context['user_photos'] = Photo.objects.filter(user=user).order_by('-created_at')
+            
+            # Statistics for artist's content
+            from django.db.models import Sum
+            context['stats'] = {
+                'total_photos': Photo.objects.filter(user=user).count(),
+                'total_likes': Like.objects.filter(photo__user=user).count(),
+                'total_views': Photo.objects.filter(user=user).aggregate(Sum('views_count'))['views_count__sum'] or 0,
+                'total_comments': Comment.objects.filter(photo__user=user).count(),
+            }
+        except:
+            context['user_photos'] = []
+            context['stats'] = {
+                'total_photos': 0,
+                'total_likes': 0,
+                'total_views': 0,
+                'total_comments': 0,
+            }
         
         return context
 
@@ -434,6 +499,7 @@ class ToggleUserStatusView(LoginRequiredMixin, RoleRequiredMixin, View):
         
         status = "activated" if user.is_active else "deactivated"
         
+        # Log status change
         UserActivityLog.objects.create(
             user=request.user,
             action='profile_update',
