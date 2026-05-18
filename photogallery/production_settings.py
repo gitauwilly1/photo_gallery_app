@@ -4,6 +4,7 @@ Production settings for Render deployment
 
 import os
 import dj_database_url
+from .settings import BASE_DIR
 
 # Security settings
 DEBUG = False
