@@ -16,7 +16,7 @@ from .forms import (
     UserRegistrationForm, UserLoginForm, UserProfileForm, 
     UserPasswordChangeForm, UserRoleChangeForm
 )
-# from gallery.models import Photo, Like, Comment
+from gallery.models import Photo, Like, Comment
 from django.core.exceptions import PermissionDenied
 
 
