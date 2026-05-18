@@ -13,21 +13,27 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#3B82F6',
-                        secondary: '#10B981',
+                        primary: '#667eea',
+                        secondary: '#764ba2',
+                        accent: '#f5576c',
                         dark: '#1F2937',
                     },
                     fontFamily: {
                         'sans': ['Inter', 'system-ui', 'sans-serif'],
                     },
                     animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                        'slide-down': 'slideDown 0.4s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
                     },
                     keyframes: {
                         fadeIn: {
@@ -38,6 +44,10 @@
                             '0%': { transform: 'translateY(20px)', opacity: '0' },
                             '100%': { transform: 'translateY(0)', opacity: '1' },
                         },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
                     },
                 }
             }
@@ -46,37 +56,37 @@
     
     {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-gray-50 font-sans antialiased">
+<body class="font-sans antialiased">
     
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <nav class="fixed top-0 w-full z-50 backdrop-blur-lg border-b border-white border-opacity-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <a href="{% url 'core:home' %}" class="flex items-center space-x-2">
-                        <svg class="h-8 w-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <span class="font-bold text-xl text-gray-800">PhotoGallery</span>
+                    <a href="{% url 'core:home' %}" class="flex items-center space-x-2 group">
+                        <div class="p-2 bg-gradient-to-br from-primary to-secondary rounded-lg transform group-hover:scale-110 transition-transform">
+                            <i class="fas fa-camera text-white text-xl"></i>
+                        </div>
+                        <span class="font-bold text-xl text-gradient hidden sm:inline">PhotoGallery</span>
                     </a>
                 </div>
                 
                 <!-- Desktop Navigation Links -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{% url 'core:home' %}" class="text-gray-700 hover:text-primary-600 transition duration-300">
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="{% url 'core:home' %}" class="relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 font-medium">
                         <i class="fas fa-home mr-2"></i>Home
                     </a>
-                    <a href="{% url 'gallery:gallery' %}" class="text-gray-700 hover:text-primary-600 transition duration-300">
+                    <a href="{% url 'gallery:gallery' %}" class="relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 font-medium">
                         <i class="fas fa-images mr-2"></i>Gallery
                     </a>
                     {% if user.is_authenticated %}
                         {% if user.can_upload %}
-                        <a href="{% url 'gallery:photo_upload' %}" class="text-gray-700 hover:text-primary-600 transition duration-300">
-                            <i class="fas fa-upload mr-2"></i>Upload
+                        <a href="{% url 'gallery:photo_upload' %}" class="relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 font-medium">
+                            <i class="fas fa-cloud-upload-alt mr-2"></i>Upload
                         </a>
                         {% endif %}
-                        <a href="{% url 'accounts:dashboard' %}" class="text-gray-700 hover:text-primary-600 transition duration-300">
-                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        <a href="{% url 'accounts:dashboard' %}" class="relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 font-medium">
+                            <i class="fas fa-chart-line mr-2"></i>Dashboard
                         </a>
                     {% endif %}
                 </div>
@@ -85,61 +95,87 @@
                 <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
                         <!-- Notifications -->
-                        <button class="relative text-gray-600 hover:text-primary-600 transition">
+                        <button class="relative text-gray-600 hover:text-primary transition transform hover:scale-110">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                             </svg>
-                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">0</span>
+                            <span class="absolute -top-1 -right-1 bg-gradient-to-r from-primary to-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-pulse-slow">0</span>
                         </button>
                         
                         <!-- User Dropdown -->
                         <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
+                            <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none hover:opacity-80 transition">
                                 {% if user.profile_picture %}
-                                    <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="h-8 w-8 rounded-full object-cover">
+                                    <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="h-9 w-9 rounded-full object-cover ring-2 ring-primary ring-opacity-50">
                                 {% else %}
-                                    <div class="h-8 w-8 rounded-full bg-primary-600 flex items-center justify-center">
-                                        <span class="text-white text-sm font-semibold">{{ user.username|make_list|first|upper }}</span>
+                                    <div class="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center ring-2 ring-opacity-50 ring-primary">
+                                        <span class="text-white text-sm font-bold">{{ user.username|make_list|first|upper }}</span>
                                     </div>
                                 {% endif %}
-                                <span class="text-gray-700 hidden md:inline">{{ user.username }}</span>
-                                <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <span class="text-gray-700 hidden md:inline font-medium">{{ user.username }}</span>
+                                <svg class="h-4 w-4 text-gray-600 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
                             
-                            <!-- Dropdown Menu -->
-                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-50" style="display: none;">
-                                <a href="{% url 'accounts:profile' user.username %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-user mr-2"></i>Profile
-                                </a>
-                                <a href="{% url 'accounts:profile_edit' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-edit mr-2"></i>Edit Profile
-                                </a>
-                                <hr class="my-1">
-                                <a href="{% url 'gallery:user_gallery' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-images mr-2"></i>My Photos
-                                </a>
-                                <a href="{% url 'gallery:user_favorites' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-heart mr-2"></i>Favorites
-                                </a>
-                                <hr class="my-1">
-                                {% if user.is_admin or user.is_moderator %}
-                                <a href="{% url 'accounts:user_management' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-users-cog mr-2"></i>Manage Users
-                                </a>
-                                {% endif %}
-                                <hr class="my-1">
-                                <a href="{% url 'accounts:logout' %}" class="block px-4 py-2 text-red-600 hover:bg-gray-100">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                                </a>
+                            <!-- Dropdown Menu with Glassmorphism -->
+                            <div x-show="open" @click.away="open = false" 
+                                 class="absolute right-0 mt-3 w-56 glass-container rounded-2xl z-50 overflow-hidden shadow-2xl"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform scale-95"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 style="display: none;">
+                                
+                                <!-- User Info Header -->
+                                <div class="px-4 py-4 bg-gradient-to-r from-primary to-secondary text-white">
+                                    <p class="font-semibold">{{ user.get_full_name|default:user.username }}</p>
+                                    <p class="text-sm opacity-90">{{ user.email }}</p>
+                                </div>
+                                
+                                <div class="divide-y divide-white divide-opacity-10">
+                                    <!-- Profile Section -->
+                                    <div class="px-2 py-2">
+                                        <a href="{% url 'accounts:profile' user.username %}" class="block px-4 py-2 text-gray-700 hover:bg-white hover:bg-opacity-20 rounded-lg transition transform hover:translate-x-1">
+                                            <i class="fas fa-user mr-3 text-primary"></i><span class="font-medium">My Profile</span>
+                                        </a>
+                                        <a href="{% url 'accounts:profile_edit' %}" class="block px-4 py-2 text-gray-700 hover:bg-white hover:bg-opacity-20 rounded-lg transition transform hover:translate-x-1">
+                                            <i class="fas fa-user-edit mr-3 text-primary"></i><span class="font-medium">Edit Profile</span>
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Photos Section -->
+                                    <div class="px-2 py-2">
+                                        <a href="{% url 'gallery:user_gallery' %}" class="block px-4 py-2 text-gray-700 hover:bg-white hover:bg-opacity-20 rounded-lg transition transform hover:translate-x-1">
+                                            <i class="fas fa-images mr-3 text-accent"></i><span class="font-medium">My Photos</span>
+                                        </a>
+                                        <a href="{% url 'gallery:user_favorites' %}" class="block px-4 py-2 text-gray-700 hover:bg-white hover:bg-opacity-20 rounded-lg transition transform hover:translate-x-1">
+                                            <i class="fas fa-heart mr-3 text-red-500"></i><span class="font-medium">Favorites</span>
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Admin Section -->
+                                    {% if user.is_admin or user.is_moderator %}
+                                    <div class="px-2 py-2">
+                                        <a href="{% url 'accounts:user_management' %}" class="block px-4 py-2 text-gray-700 hover:bg-white hover:bg-opacity-20 rounded-lg transition transform hover:translate-x-1">
+                                            <i class="fas fa-users-cog mr-3 text-yellow-500"></i><span class="font-medium">Manage Users</span>
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- Logout -->
+                                    <div class="px-2 py-2">
+                                        <a href="{% url 'accounts:logout' %}" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition transform hover:translate-x-1 font-medium">
+                                            <i class="fas fa-sign-out-alt mr-3"></i>Logout
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     {% else %}
-                        <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-primary-600 transition">
+                        <a href="{% url 'accounts:login' %}" class="px-4 py-2 text-gray-700 font-medium hover:text-primary transition">
                             <i class="fas fa-sign-in-alt mr-2"></i>Login
                         </a>
-                        <a href="{% url 'accounts:register' %}" class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition">
+                        <a href="{% url 'accounts:register' %}" class="btn-glass">
                             <i class="fas fa-user-plus mr-2"></i>Sign Up
                         </a>
                     {% endif %}
@@ -149,43 +185,52 @@
     </nav>
     
     {% if messages %}
-    <div class="fixed top-20 right-4 z-50 space-y-2" x-data>
+    <div class="fixed top-24 right-4 z-50 space-y-3" x-data="{ visible: true }" x-init="setTimeout(() => visible = false, 5000)">
         {% for message in messages %}
-        <div class="bg-white rounded-lg shadow-lg p-4 max-w-sm animate-slide-up border-l-4 
-                    {% if message.tags == 'success' %}border-green-500{% elif message.tags == 'error' %}border-red-500{% elif message.tags == 'warning' %}border-yellow-500{% else %}border-blue-500{% endif %}">
-            <div class="flex items-center">
+        <div x-show="visible" class="glass-card px-5 py-4 max-w-sm animate-slide-up border-l-4 
+                    {% if message.tags == 'success' %}border-green-500 bg-green-50{% elif message.tags == 'error' %}border-red-500 bg-red-50{% elif message.tags == 'warning' %}border-yellow-500 bg-yellow-50{% else %}border-blue-500 bg-blue-50{% endif %}"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0 transform scale-95">
+            <div class="flex items-start">
                 {% if message.tags == 'success' %}
-                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                <svg class="h-6 w-6 text-green-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 {% elif message.tags == 'error' %}
-                <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                <svg class="h-6 w-6 text-red-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                {% elif message.tags == 'warning' %}
+                <svg class="h-6 w-6 text-yellow-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0-6a4 4 0 100 8 4 4 0 000-8z"></path>
                 </svg>
                 {% else %}
-                <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="h-6 w-6 text-blue-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 {% endif %}
-                <p class="text-gray-700">{{ message }}</p>
+                <p class="text-gray-800 font-medium">{{ message }}</p>
             </div>
         </div>
         {% endfor %}
     </div>
     {% endif %}
     
-    <main class="min-h-screen">
+    <main class="min-h-screen pt-16">
         {% block content %}{% endblock %}
     </main>
     
-    <footer class="bg-gray-900 text-white mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <svg class="h-8 w-8 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
+    <!-- Footer with Glassmorphism -->
+    <footer class="relative backdrop-blur-lg bg-gray-900 bg-opacity-80 text-white mt-20 border-t border-white border-opacity-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <!-- Brand -->
+                <div class="space-y-4 animate-fade-in-up">
+                    <div class="flex items-center space-x-2">
+                        <div class="p-2 bg-gradient-to-br from-primary to-secondary rounded-lg">
+                            <i class="fas fa-camera text-white text-xl"></i>
+                        </div>
                         <span class="font-bold text-xl">PhotoGallery</span>
                     </div>
                     <p class="text-gray-400">Discover and share amazing photos from talented photographers worldwide.</p>

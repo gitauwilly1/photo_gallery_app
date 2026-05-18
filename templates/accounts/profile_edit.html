@@ -4,77 +4,125 @@
 {% block title %}Edit Profile - PhotoGallery{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div class="bg-gradient-to-r from-primary-600 to-purple-600 px-6 py-4">
-            <h1 class="text-2xl font-bold text-white">Edit Profile</h1>
-            <p class="text-primary-100 mt-1">Update your personal information</p>
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8 animate-fade-in-up">
+        <h1 class="text-5xl font-black text-gray-900 mb-3">
+            Edit <span class="text-gradient">Profile</span>
+        </h1>
+        <p class="text-xl text-gray-600">Update your personal information and customize your profile</p>
+    </div>
+    
+    <!-- Main Form Container -->
+    <div class="glass-container rounded-3xl overflow-hidden animate-fade-in-up" style="animation-delay: 0.1s;">
+        <!-- Header -->
+        <div class="px-8 py-6 border-b border-gray-200 border-opacity-50 bg-gradient-to-r from-primary to-secondary bg-opacity-10">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                    <i class="fas fa-user-edit text-white text-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Account Settings</h2>
+                    <p class="text-sm text-gray-600">Make changes to your profile</p>
+                </div>
+            </div>
         </div>
         
-        <form method="POST" enctype="multipart/form-data" class="p-6">
+        <form method="POST" enctype="multipart/form-data" class="p-8">
             {% csrf_token %}
             
-            <div class="space-y-6">
-                <!-- Current Profile Picture -->
-                <div class="flex items-center space-x-4">
-                    {% if user.profile_picture %}
-                    <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="h-20 w-20 rounded-full object-cover">
-                    {% else %}
-                    <div class="h-20 w-20 rounded-full bg-primary-600 flex items-center justify-center">
-                        <span class="text-white text-2xl font-bold">{{ user.username|make_list|first|upper }}</span>
+            <div class="space-y-8">
+                <!-- Profile Picture Section -->
+                <div class="pb-8 border-b border-gray-200 border-opacity-50">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center">
+                        <i class="fas fa-image mr-3 text-primary"></i>Profile Picture
+                    </h3>
+                    
+                    <div class="flex flex-col sm:flex-row items-center gap-6">
+                        <!-- Current Picture -->
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="h-24 w-24 rounded-2xl object-cover border-4 border-white shadow-lg">
+                        {% else %}
+                            <div class="h-24 w-24 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center border-4 border-white shadow-lg">
+                                <span class="text-white text-3xl font-black">{{ user.username|make_list|first|upper }}</span>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Upload Input -->
+                        <div class="flex-1">
+                            <label for="profile_picture" class="block text-sm font-bold text-gray-900 mb-2">
+                                <i class="fas fa-upload mr-2"></i>Upload New Picture
+                            </label>
+                            <input type="file" name="profile_picture" id="profile_picture" accept="image/*"
+                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-primary file:to-secondary file:text-white hover:file:opacity-90 transition cursor-pointer">
+                            <p class="text-xs text-gray-500 mt-2">PNG, JPG up to 10MB</p>
+                        </div>
                     </div>
-                    {% endif %}
+                </div>
+                
+                <!-- Name Fields -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-8 border-b border-gray-200 border-opacity-50">
                     <div>
-                        <label for="profile_picture" class="block text-sm font-medium text-gray-700">Profile Picture</label>
-                        <input type="file" name="profile_picture" id="profile_picture" accept="image/*"
-                               class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                        <label for="first_name" class="block text-sm font-bold text-gray-900 mb-3">
+                            <i class="fas fa-user mr-2 text-primary"></i>First Name
+                        </label>
+                        <input type="text" name="first_name" id="first_name" value="{{ form.first_name.value|default:'' }}"
+                               class="w-full px-4 py-3 glass-card rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                               placeholder="Your first name">
+                    </div>
+                    
+                    <div>
+                        <label for="last_name" class="block text-sm font-bold text-gray-900 mb-3">
+                            <i class="fas fa-user mr-2 text-primary"></i>Last Name
+                        </label>
+                        <input type="text" name="last_name" id="last_name" value="{{ form.last_name.value|default:'' }}"
+                               class="w-full px-4 py-3 glass-card rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                               placeholder="Your last name">
                     </div>
                 </div>
                 
-                <!-- First Name -->
-                <div>
-                    <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                    <input type="text" name="first_name" id="first_name" value="{{ form.first_name.value|default:'' }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                <!-- Bio Section -->
+                <div class="pb-8 border-b border-gray-200 border-opacity-50">
+                    <label for="bio" class="block text-sm font-bold text-gray-900 mb-3">
+                        <i class="fas fa-pen-fancy mr-2 text-primary"></i>Bio
+                    </label>
+                    <textarea name="bio" id="bio" rows="5"
+                              class="w-full px-4 py-3 glass-card rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition resize-none"
+                              placeholder="Tell us about yourself... What makes you unique?">{{ form.bio.value|default:'' }}</textarea>
+                    <div class="flex items-center justify-between mt-2">
+                        <p class="text-xs text-gray-500">Share your passion and interests</p>
+                        <p class="text-xs text-gray-500">Max 500 characters</p>
+                    </div>
                 </div>
                 
-                <!-- Last Name -->
-                <div>
-                    <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                    <input type="text" name="last_name" id="last_name" value="{{ form.last_name.value|default:'' }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                </div>
-                
-                <!-- Bio -->
-                <div>
-                    <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                    <textarea name="bio" id="bio" rows="4"
-                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                              placeholder="Tell us about yourself...">{{ form.bio.value|default:'' }}</textarea>
-                    <p class="text-xs text-gray-500 mt-1">Max 500 characters</p>
-                </div>
-                
-                <!-- Submit Buttons -->
-                <div class="flex gap-4 pt-4 border-t border-gray-200">
-                    <button type="submit" class="flex-1 bg-primary-600 text-white py-2 px-4 rounded-lg hover:bg-primary-700 transition">
-                        <i class="fas fa-save mr-2"></i>Save Changes
+                <!-- Action Buttons -->
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 btn-glass flex items-center justify-center py-3 rounded-lg font-bold text-lg">
+                        <i class="fas fa-check mr-2"></i>Save Changes
                     </button>
-                    <a href="{% url 'accounts:profile' user.username %}" class="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition text-center">
+                    <a href="{% url 'accounts:profile' user.username %}" class="flex-1 glass-card rounded-lg py-3 px-4 text-center font-bold text-gray-900 hover:bg-white hover:bg-opacity-70 transition transform hover:scale-105">
                         <i class="fas fa-times mr-2"></i>Cancel
                     </a>
                 </div>
             </div>
         </form>
+    </div>
+    
+    <!-- Danger Zone -->
+    <div class="glass-container rounded-3xl overflow-hidden mt-8 animate-fade-in-up" style="animation-delay: 0.2s;">
+        <div class="px-8 py-6 border-b border-red-200 border-opacity-50 bg-red-50 bg-opacity-30">
+            <h3 class="text-lg font-bold text-red-600 flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Danger Zone
+            </h3>
+        </div>
         
-        <!-- Danger Zone -->
-        <div class="border-t border-gray-200 bg-gray-50 p-6">
-            <h3 class="text-lg font-semibold text-red-600 mb-2">Danger Zone</h3>
-            <div class="flex items-center justify-between">
+        <div class="p-8">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <p class="text-sm text-gray-700">Change your password</p>
-                    <p class="text-xs text-gray-500">Update your account password</p>
+                    <h4 class="font-bold text-gray-900 mb-1">Change Your Password</h4>
+                    <p class="text-sm text-gray-600">Update your account password for better security</p>
                 </div>
-                <a href="{% url 'accounts:change_password' %}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                <a href="{% url 'accounts:change_password' %}" class="inline-flex items-center px-6 py-3 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-lg transition transform hover:scale-105 whitespace-nowrap">
                     <i class="fas fa-key mr-2"></i>Change Password
                 </a>
             </div>

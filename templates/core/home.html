@@ -4,68 +4,97 @@
 {% block title %}Home - PhotoGallery{% endblock %}
 
 {% block content %}
-<div class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-    <div class="absolute inset-0 bg-black opacity-50"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">
+<!-- Hero Section with Animated Gradient -->
+<div class="relative h-screen flex items-center justify-center overflow-hidden">
+    <!-- Animated Background Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 opacity-80 animate-gradient-shift"></div>
+    
+    <!-- Blur overlay -->
+    <div class="absolute inset-0 backdrop-blur-sm bg-black bg-opacity-20"></div>
+    
+    <!-- Floating shapes for decoration -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
+    <div class="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style="animation-delay: 4s;"></div>
+    
+    <!-- Hero Content -->
+    <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in drop-shadow-lg">
             Discover Amazing Photography
         </h1>
-        <p class="text-xl md:text-2xl mb-8 opacity-90">
+        <p class="text-xl md:text-2xl text-white mb-12 opacity-95 animate-fade-in drop-shadow-md" style="animation-delay: 0.2s;">
             Explore thousands of stunning photos from talented photographers worldwide
         </p>
-        <div class="flex justify-center space-x-4">
-            <a href="{% url 'gallery:gallery' %}" class="bg-white text-gray-900 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition transform hover:scale-105">
-                <i class="fas fa-images mr-2"></i>Explore Gallery
+        
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" style="animation-delay: 0.4s;">
+            <a href="{% url 'gallery:gallery' %}" class="btn-glass text-lg px-10 py-4">
+                <i class="fas fa-images mr-3"></i>Explore Gallery
             </a>
             {% if not user.is_authenticated %}
-            <a href="{% url 'accounts:register' %}" class="bg-transparent border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition transform hover:scale-105">
-                <i class="fas fa-user-plus mr-2"></i>Join Now
+            <a href="{% url 'accounts:register' %}" class="btn-glass-secondary text-lg px-10 py-4">
+                <i class="fas fa-user-plus mr-3"></i>Join Now
             </a>
             {% endif %}
         </div>
     </div>
 </div>
 
-<!-- Featured Photos -->
+<!-- Featured Photos Section -->
 {% if featured_photos %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Photos</h2>
-        <p class="text-gray-600">Curated selection of exceptional photography</p>
+<div class="relative py-20 px-4 sm:px-6 lg:px-8">
+    <!-- Background decoration -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {% for photo in featured_photos %}
-        <div class="group relative overflow-hidden rounded-lg shadow-lg photo-card">
-            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-300">
-            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
-                <div class="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 class="text-white font-semibold">{{ photo.title }}</h3>
-                    <p class="text-gray-300 text-sm">by {{ photo.user.username }}</p>
-                    <div class="flex items-center space-x-4 mt-2">
-                        <span class="text-white text-sm"><i class="fas fa-heart mr-1"></i>{{ photo.likes_count }}</span>
-                        <span class="text-white text-sm"><i class="fas fa-eye mr-1"></i>{{ photo.views_count }}</span>
+    
+    <div class="relative max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-5xl font-bold text-gradient mb-4 animate-slide-up">Featured Photos</h2>
+            <p class="text-xl text-gray-600 animate-slide-up" style="animation-delay: 0.1s;">Curated selection of exceptional photography</p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for photo in featured_photos %}
+            <div class="group relative overflow-hidden rounded-2xl photo-card glass-card cursor-pointer" style="animation-delay: {{ forloop.counter|add:'-1' }}0ms;">
+                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-80 object-cover">
+                
+                <!-- Glass Overlay -->
+                <div class="photo-overlay">
+                    <div class="photo-overlay-content w-full">
+                        <h3 class="text-white font-bold text-lg mb-1">{{ photo.title }}</h3>
+                        <p class="text-gray-200 text-sm mb-3">by <span class="font-semibold">{{ photo.user.username }}</span></p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex gap-4">
+                                <span class="text-white text-sm flex items-center"><i class="fas fa-heart mr-2 text-red-400"></i>{{ photo.likes_count }}</span>
+                                <span class="text-white text-sm flex items-center"><i class="fas fa-eye mr-2 text-blue-400"></i>{{ photo.views_count }}</span>
+                            </div>
+                            <a href="{% url 'gallery:photo_detail' photo.slug %}" class="inline-block bg-white bg-opacity-20 hover:bg-opacity-40 backdrop-blur-sm px-4 py-2 rounded-lg transition font-semibold">
+                                View
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <a href="{% url 'gallery:photo_detail' photo.slug %}" class="absolute inset-0"></a>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
 </div>
 {% endif %}
 
-<!-- Categories / Popular Tags -->
+<!-- Popular Tags Section -->
 {% if popular_tags %}
-<div class="bg-gray-100 py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Popular Tags</h2>
-            <p class="text-gray-600">Explore photos by category</p>
+<div class="relative py-20 px-4 sm:px-6 lg:px-8 backdrop-blur-lg bg-white bg-opacity-40">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4 animate-slide-up">Popular Tags</h2>
+            <p class="text-lg text-gray-700 animate-slide-up" style="animation-delay: 0.1s;">Explore photos by category</p>
         </div>
+        
         <div class="flex flex-wrap justify-center gap-3">
             {% for tag in popular_tags %}
-            <a href="{% url 'gallery:tag_filter' tag.slug %}" class="bg-white px-4 py-2 rounded-full text-gray-700 hover:bg-primary-600 hover:text-white transition shadow-sm">
-                <i class="fas fa-tag mr-1"></i>{{ tag.name }}
+            <a href="{% url 'gallery:tag_filter' tag.slug %}" class="tag px-6 py-3 rounded-full font-medium transform transition hover:scale-105 hover:shadow-lg animate-fade-in-up" style="animation-delay: {{ forloop.counter|add:'-1' }}00ms;">
+                <i class="fas fa-tag mr-2"></i>{{ tag.name }}
             </a>
             {% endfor %}
         </div>
@@ -73,31 +102,67 @@
 </div>
 {% endif %}
 
-<!-- Recent Uploads -->
+<!-- Recent Uploads Section -->
 {% if recent_photos %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Recent Uploads</h2>
-        <p class="text-gray-600">Latest photos from our community</p>
+<div class="relative py-20 px-4 sm:px-6 lg:px-8">
+    <!-- Background decoration -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {% for photo in recent_photos %}
-        <div class="bg-white rounded-lg overflow-hidden shadow-md photo-card">
-            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-48 object-cover">
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-900 mb-1 truncate">{{ photo.title }}</h3>
-                <p class="text-gray-600 text-sm mb-2">by {{ photo.user.username }}</p>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-gray-500 text-sm"><i class="fas fa-heart"></i> {{ photo.likes_count }}</span>
-                        <span class="text-gray-500 text-sm"><i class="fas fa-comment"></i> {{ photo.comments_count }}</span>
+    
+    <div class="relative max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-5xl font-bold text-gradient mb-4 animate-slide-up">Recent Uploads</h2>
+            <p class="text-xl text-gray-600 animate-slide-up" style="animation-delay: 0.1s;">Latest photos from our community</p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for photo in recent_photos %}
+            <div class="glass-card overflow-hidden rounded-2xl photo-card group" style="animation-delay: {{ forloop.counter|add:'-1' }}0ms;">
+                <!-- Image Container -->
+                <div class="relative h-64 overflow-hidden">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    
+                    <!-- Quick View Button -->
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-center justify-center">
+                        <a href="{% url 'gallery:photo_detail' photo.slug %}" class="btn-glass opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition duration-300">
+                            Quick View
+                        </a>
                     </div>
-                    <a href="{% url 'gallery:photo_detail' photo.slug %}" class="text-primary-600 hover:text-primary-700 text-sm font-semibold">
-                        View <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
+                </div>
+                
+                <!-- Info Section -->
+                <div class="p-6 space-y-3">
+                    <h3 class="font-bold text-lg text-gray-900 line-clamp-2">{{ photo.title }}</h3>
+                    <p class="text-gray-600 text-sm flex items-center">
+                        {% if photo.user.profile_picture %}
+                            <img src="{{ photo.user.profile_picture.url }}" alt="{{ photo.user.username }}" class="h-6 w-6 rounded-full mr-2 object-cover">
+                        {% else %}
+                            <div class="h-6 w-6 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xs font-bold mr-2">
+                                {{ photo.user.username|make_list|first|upper }}
+                            </div>
+                        {% endif %}
+                        <a href="{% url 'accounts:profile' photo.user.username %}" class="hover:text-primary transition font-medium">
+                            {{ photo.user.username }}
+                        </a>
+                    </p>
+                    
+                    <!-- Stats -->
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-200 border-opacity-50">
+                        <div class="flex gap-4 text-sm text-gray-600">
+                            <span class="flex items-center hover:text-red-500 transition cursor-pointer">
+                                <i class="fas fa-heart mr-1"></i>{{ photo.likes_count }}
+                            </span>
+                            <span class="flex items-center hover:text-blue-500 transition cursor-pointer">
+                                <i class="fas fa-comment mr-1"></i>{{ photo.comments_count }}
+                            </span>
+                        </div>
+                        <a href="{% url 'gallery:photo_detail' photo.slug %}" class="text-primary font-semibold hover:text-secondary transition inline-flex items-center">
+                            View <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
         {% endfor %}
     </div>
     <div class="text-center mt-8">
