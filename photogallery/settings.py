@@ -5,6 +5,9 @@ import cloudinary.uploader
 import cloudinary.api
 from decouple import config
 
+if os.environ.get('RENDER'):
+    from .production_settings import *
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
