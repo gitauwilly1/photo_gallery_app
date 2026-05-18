@@ -6,12 +6,11 @@ import cloudinary.api
 from decouple import config
 import dj_database_url
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 if os.environ.get('RENDER'):
     from .production_settings import *
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
