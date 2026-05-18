@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Artist Dashboard - PhotoGallery{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-green-600 to-teal-600 rounded-xl shadow-lg p-6 mb-8 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold">Artist Dashboard</h1>
+                <p class="text-green-100 mt-1">Manage your portfolio and track performance</p>
+            </div>
+            <a href="{% url 'gallery:photo_upload' %}" class="bg-white text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                <i class="fas fa-upload mr-2"></i>Upload New Photo
+            </a>
+        </div>
+    </div>
+    
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <p class="text-gray-500 text-sm">Total Photos</p>
+            <p class="text-3xl font-bold text-gray-900">{{ stats.total_photos }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <p class="text-gray-500 text-sm">Total Likes</p>
+            <p class="text-3xl font-bold text-red-600">{{ stats.total_likes }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <p class="text-gray-500 text-sm">Total Comments</p>
+            <p class="text-3xl font-bold text-blue-600">{{ stats.total_comments }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <p class="text-gray-500 text-sm">Total Views</p>
+            <p class="text-3xl font-bold text-purple-600">{{ stats.total_views }}</p>
+        </div>
+    </div>
+    
+    <!-- My Photos -->
+    <div class="bg-white rounded-xl shadow-md">
+        <div class="border-b border-gray-200 px-6 py-4">
+            <h3 class="text-lg font-bold text-gray-900">My Photos</h3>
+        </div>
+        
+        {% if user_photos %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            {% for photo in user_photos %}
+            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
+                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h4 class="font-semibold text-gray-900">{{ photo.title }}</h4>
+                    <div class="flex items-center justify-between mt-2 text-sm">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-gray-500"><i class="fas fa-heart text-red-500"></i> {{ photo.likes_count }}</span>
+                            <span class="text-gray-500"><i class="fas fa-comment"></i> {{ photo.comments_count }}</span>
+                            <span class="text-gray-500"><i class="fas fa-eye"></i> {{ photo.views_count }}</span>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded-full {% if photo.is_approved %}bg-green-100 text-green-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                            {% if photo.is_approved %}Published{% else %}Pending{% endif %}
+                        </span>
+                    </div>
+                    <div class="flex space-x-2 mt-3">
+                        <a href="{% url 'gallery:photo_edit' photo.slug %}" class="flex-1 text-center px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'gallery:photo_detail' photo.slug %}" class="flex-1 text-center px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 text-sm">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="p-12 text-center">
+            <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <h3 class="mt-2 text-lg font-medium text-gray-900">No photos yet</h3>
+            <p class="text-gray-500">Start sharing your art with the community</p>
+            <a href="{% url 'gallery:photo_upload' %}" class="mt-4 inline-block bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700">
+                <i class="fas fa-upload mr-2"></i>Upload Your First Photo
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
