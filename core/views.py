@@ -24,10 +24,10 @@ class HomeView(TemplateView):
         # Get popular tags
         try:
             from gallery.models import Tag
-            from django.db.models import Count
+            from django.db.models import Count, Q
             context['popular_tags'] = Tag.objects.annotate(
-                photo_count=Count('photos', filter=Count('photos__is_approved', True))
-            ).filter(photo_count__gt=0).order_by('-photo_count')[:10]
+                approved_photo_count=Count('photos', filter=Q(photos__is_approved=True))
+            ).filter(approved_photo_count__gt=0).order_by('-approved_photo_count')[:10]
         except:
             context['popular_tags'] = []
         

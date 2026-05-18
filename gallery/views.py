@@ -52,8 +52,8 @@ class GalleryView(ListView):
         
         # Get all tags for filter bar
         context['all_tags'] = Tag.objects.annotate(
-            photo_count=Count('photos', filter=Q(photos__is_approved=True))
-        ).filter(photo_count__gt=0).order_by('-photo_count')[:20]
+            approved_photo_count=Count('photos', filter=Q(photos__is_approved=True))
+        ).filter(approved_photo_count__gt=0).order_by('-approved_photo_count')[:20]
         
         context['tag_filter'] = getattr(self, 'tag_filter', None)
         context['search_query'] = getattr(self, 'search_query', '')
@@ -65,8 +65,8 @@ class GalleryView(ListView):
         
         # Get popular tags
         context['popular_tags'] = Tag.objects.annotate(
-            photo_count=Count('photos', filter=Q(photos__is_approved=True))
-        ).filter(photo_count__gt=0).order_by('-photo_count')[:10]
+            approved_photo_count=Count('photos', filter=Q(photos__is_approved=True))
+        ).filter(approved_photo_count__gt=0).order_by('-approved_photo_count')[:10]
         
         return context
 

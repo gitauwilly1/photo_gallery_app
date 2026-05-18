@@ -15,7 +15,7 @@
         <!-- Current Photo Preview -->
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center space-x-4">
-                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-32 h-32 object-cover rounded-lg shadow-md">
+                <img src="{{ photo.image }}" alt="{{ photo.title }}" class="w-32 h-32 object-cover rounded-lg shadow-md">
                 <div>
                     <p class="text-sm text-gray-600">Current photo</p>
                     <p class="text-xs text-gray-500">Uploaded on {{ photo.created_at|date:"F j, Y" }}</p>

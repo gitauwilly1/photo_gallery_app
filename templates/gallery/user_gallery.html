@@ -63,7 +63,7 @@
         {% for photo in photos %}
         <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition">
             <div class="relative">
-                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-56 object-cover">
+                <img src="{{ photo.image }}" alt="{{ photo.title }}" class="w-full h-56 object-cover">
                 <div class="absolute top-2 right-2">
                     <span class="px-2 py-1 text-xs rounded-full {% if photo.is_approved %}bg-green-500 text-white{% else %}bg-yellow-500 text-white{% endif %}">
                         {% if photo.is_approved %}Approved{% else %}Pending{% endif %}

@@ -32,7 +32,7 @@
                     <option value="{% url 'gallery:gallery' %}">All Photos</option>
                     {% for tag in all_tags %}
                     <option value="{% url 'gallery:tag_filter' tag.slug %}" {% if tag_filter and tag_filter.slug == tag.slug %}selected{% endif %}>
-                        {{ tag.name }} ({{ tag.photo_count }})
+                        {{ tag.name }} ({% if tag.approved_photo_count %}{{ tag.approved_photo_count }}{% else %}{{ tag.photo_count }}{% endif %})
                     </option>
                     {% endfor %}
                 </select>
@@ -59,7 +59,7 @@
         {% for photo in photos %}
         <div class="bg-white rounded-lg overflow-hidden shadow-md photo-card group">
             <div class="relative overflow-hidden">
-                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" 
+                 <img src="{{ photo.image }}" alt="{{ photo.title }}" 
                      class="w-full h-64 object-cover group-hover:scale-110 transition duration-300">
                 
                 <!-- Overlay on hover -->

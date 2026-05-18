@@ -209,7 +209,7 @@
                 {% for photo in recent_photos|slice:":5" %}
                 <div class="p-4 flex items-center justify-between hover:bg-gray-50">
                     <div class="flex items-center space-x-3">
-                        <img src="{{ photo.image.url }}" class="h-10 w-10 rounded object-cover">
+                        <img src="{{ photo.image }}" class="h-10 w-10 rounded object-cover">
                         <div>
                             <p class="font-medium text-gray-900">{{ photo.title|truncatechars:30 }}</p>
                             <p class="text-xs text-gray-500">by {{ photo.user.username }}</p>

@@ -19,7 +19,7 @@
         <!-- Main Photo Column -->
         <div class="lg:col-span-2">
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-auto">
+                <img src="{{ photo.image }}" alt="{{ photo.title }}" class="w-full h-auto">
                 
                 <!-- Action Buttons -->
                 <div class="p-4 border-t border-gray-200 flex items-center justify-between">
@@ -212,7 +212,7 @@
                 <div class="space-y-3">
                     {% for related in related_photos %}
                     <a href="{% url 'gallery:photo_detail' related.slug %}" class="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded transition">
-                        <img src="{{ related.image.url }}" alt="{{ related.title }}" class="w-16 h-16 object-cover rounded">
+                        <img src="{{ related.image }}" alt="{{ related.title }}" class="w-16 h-16 object-cover rounded">
                         <div class="flex-1">
                             <p class="text-sm font-medium text-gray-900 truncate">{{ related.title }}</p>
                             <p class="text-xs text-gray-500">{{ related.likes_count }} likes</p>

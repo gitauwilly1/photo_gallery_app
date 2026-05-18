@@ -36,7 +36,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {% for photo in photos %}
         <div class="bg-white rounded-lg overflow-hidden shadow-md photo-card">
-            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-56 object-cover">
+            <img src="{{ photo.image }}" alt="{{ photo.title }}" class="w-full h-56 object-cover">
             <div class="p-4">
                 <h3 class="font-semibold text-gray-900 truncate">{{ photo.title }}</h3>
                 <p class="text-sm text-gray-600 mt-1">by {{ photo.user.username }}</p>

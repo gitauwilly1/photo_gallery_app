@@ -52,7 +52,7 @@
             {% for photo in pending_photos %}
             <div class="p-6 hover:bg-gray-50 transition">
                 <div class="flex items-start space-x-4">
-                    <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-24 h-24 object-cover rounded-lg">
+                    <img src="{{ photo.image }}" alt="{{ photo.title }}" class="w-24 h-24 object-cover rounded-lg">
                     <div class="flex-1">
                         <h4 class="font-semibold text-gray-900">{{ photo.title }}</h4>
                         <p class="text-sm text-gray-600 mt-1">{{ photo.description|truncatechars:150 }}</p>

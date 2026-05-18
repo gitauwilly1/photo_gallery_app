@@ -57,7 +57,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {% for photo in featured_photos %}
             <div class="group relative overflow-hidden rounded-2xl photo-card glass-card cursor-pointer" style="animation-delay: {{ forloop.counter|add:'-1' }}0ms;">
-                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-80 object-cover">
+                <img src="{{ photo.image }}" alt="{{ photo.title }}" class="w-full h-80 object-cover">
                 
                 <!-- Glass Overlay -->
                 <div class="photo-overlay">
@@ -121,7 +121,7 @@
             <div class="glass-card overflow-hidden rounded-2xl photo-card group" style="animation-delay: {{ forloop.counter|add:'-1' }}0ms;">
                 <!-- Image Container -->
                 <div class="relative h-64 overflow-hidden">
-                    <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <img src="{{ photo.image }}" alt="{{ photo.title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                     
                     <!-- Quick View Button -->
                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-center justify-center">
