@@ -2,14 +2,18 @@
 Production settings for Render deployment
 """
 
-from .settings import *
-import dj_database_url
 import os
+import dj_database_url
 
 # Security settings
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY')
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = [
+    host.strip() for host in os.environ
+    .get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com')
+    .split(',')
+    if host.strip()
+]
 
 # HTTPS settings
 SECURE_SSL_REDIRECT = True
