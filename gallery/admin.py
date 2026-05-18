@@ -65,10 +65,19 @@ class PhotoAdmin(admin.ModelAdmin):
     
     def thumbnail_preview(self, obj):
         if obj.image:
-            return format_html('<img src="{}" width="100" height="100" style="border-radius: 8px;" />', obj.image.url)
+            # For Cloudinary URLs, add transformation parameters
+            from cloudinary.utils import cloudinary_url
+            url, options = cloudinary_url(
+                obj.image.public_id if hasattr(obj.image, 'public_id') else obj.image.url,
+                width=100,
+                height=100,
+                crop='thumb',
+                gravity='face'
+            )
+            return format_html('<img src="{}" width="100" height="100" style="border-radius: 8px; object-fit: cover;" />', url)
         return "No image"
     thumbnail_preview.short_description = 'Preview'
-    
+
     def approve_photos(self, request, queryset):
         queryset.update(is_approved=True)
         self.message_user(request, f"{queryset.count()} photos have been approved.")

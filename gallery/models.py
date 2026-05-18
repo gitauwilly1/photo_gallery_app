@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.validators import MinLengthValidator, MaxLengthValidator, FileExtensionValidator
 from django.utils.text import slugify
+from cloudinary.models import CloudinaryField
 
 
 class Tag(models.Model):
@@ -39,11 +40,9 @@ class Photo(models.Model):
     description = models.TextField(max_length=1000, blank=True)
     
     # Media
-    image = models.ImageField(
-        upload_to='photos/%Y/%m/%d/',
-        validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'gif', 'webp'])]
-    )
-    
+    image = models.URLField(max_length=500, help_text="Cloudinary image URL")
+    thumbnail = models.URLField(max_length=500, blank=True, help_text="Cloudinary thumbnail URL")
+        
     # Metadata
     tags = models.ManyToManyField(Tag, related_name='photos', blank=True)
     

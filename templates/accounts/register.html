@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load socialaccount %}
 
 {% block title %}Sign Up - PhotoGallery{% endblock %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-slate-950 px-4 py-12">
-    <div class="glass-container max-w-xl w-full overflow-hidden rounded-3xl border border-white/20 shadow-2xl shadow-slate-950/30">
+<div class="min-h-screen flex items-center justify-center bg-pur-950 px-4 py-12">
+    <div class="glass-container max-w-xl w-full overflow-hidden rounded-3xl border border-white/20 shadow-2xl shadow-pur-950/30">
         <div class="px-8 py-10 bg-white/10 border-b border-white/10 backdrop-blur-xl">
             <div class="flex items-center justify-center mb-6">
                 <div class="h-14 w-14 rounded-3xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-lg shadow-primary/30">
                     <i class="fas fa-user-plus text-2xl"></i>
                 </div>
             </div>
-            <h2 class="text-center text-4xl font-black tracking-tight text-white mb-2">Create Account</h2>
-            <p class="text-center text-sm text-slate-300">Join the community and start sharing your best shots.</p>
+            <h2 class="text-center text-4xl font-black tracking-tight text-purple mb-2">Create Account</h2>
+            <p class="text-center text-sm text-purple-300">Join the community and start sharing your best shots.</p>
         </div>
 
         <div class="px-8 py-10 space-y-8">
@@ -21,36 +22,36 @@
                 {% csrf_token %}
                 <div class="space-y-5">
                     <div>
-                        <label for="username" class="block text-sm font-semibold text-slate-100 mb-2">Username</label>
+                        <label for="username" class="block text-sm font-semibold text-pur-100 mb-2">Username</label>
                         <input type="text" name="username" id="username" required placeholder="Choose a username"
-                               class="w-full px-4 py-3 glass-card rounded-2xl border border-white/20 text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                               class="w-full px-4 py-3 glass-card rounded-2xl border border-white/20 text-white placeholder-pur-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
                         {% if form.username.errors %}
                             <p class="mt-2 text-xs text-rose-300">{{ form.username.errors.0 }}</p>
                         {% endif %}
                     </div>
 
                     <div>
-                        <label for="email" class="block text-sm font-semibold text-slate-100 mb-2">Email Address</label>
-                        <input type="email" name="email" id="email" required placeholder="you@example.com"
-                               class="w-full px-4 py-3 glass-card rounded-2xl border border-white/20 text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                        <label for="email" class="block text-sm font-semibold text-pur-100 mb-2">Email Address</label>
+                        <input type="email" name="email" id="email" required placeholder="johndoe@gmail.com"
+                               class="w-full px-4 py-3 glass-card rounded-2xl border border-white/20 text-white placeholder-pur-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
                         {% if form.email.errors %}
                             <p class="mt-2 text-xs text-rose-300">{{ form.email.errors.0 }}</p>
                         {% endif %}
                     </div>
 
                     <div>
-                        <label for="password" class="block text-sm font-semibold text-slate-100 mb-2">Password</label>
+                        <label for="password" class="block text-sm font-semibold text-pur-100 mb-2">Password</label>
                         <input type="password" name="password" id="password" required placeholder="Create a password"
-                               class="w-full px-4 py-3 glass-card rounded-2xl border border-white/20 text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                               class="w-full px-4 py-3 glass-card rounded-2xl border border-white/20 text-white placeholder-pur-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
                         {% if form.password.errors %}
                             <p class="mt-2 text-xs text-rose-300">{{ form.password.errors.0 }}</p>
                         {% endif %}
                     </div>
 
                     <div>
-                        <label for="confirm_password" class="block text-sm font-semibold text-slate-100 mb-2">Confirm Password</label>
+                        <label for="confirm_password" class="block text-sm font-semibold text-pur-100 mb-2">Confirm Password</label>
                         <input type="password" name="confirm_password" id="confirm_password" required placeholder="Repeat your password"
-                               class="w-full px-4 py-3 glass-card rounded-2xl border border-white/20 text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                               class="w-full px-4 py-3 glass-card rounded-2xl border border-white/20 text-white placeholder-pur-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
                     </div>
                 </div>
 
@@ -63,11 +64,11 @@
             <div class="relative">
                 <div class="absolute inset-x-0 top-1/2 border-t border-white/20"></div>
                 <div class="relative flex justify-center">
-                    <span class="bg-slate-950 px-4 text-sm text-slate-300">Or continue with</span>
+                    <span class="bg-pur-950 px-4 text-sm text-pur-300">Or continue with</span>
                 </div>
             </div>
-
-            <a href="{% url 'socialaccount_login' 'google' %}" class="flex items-center justify-center gap-3 w-full py-3 rounded-2xl border border-white/15 bg-white/10 text-white transition hover:bg-white/20">
+            
+            <a href="{% provider_login_url 'google' %}" class="flex items-center justify-center gap-3 w-full py-3 rounded-2xl border border-purple/15 bg-purple/10 text-black transition hover:bg-white/20">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -77,7 +78,7 @@
                 Sign up with Google
             </a>
 
-            <p class="text-center text-sm text-slate-300">
+            <p class="text-center text-sm text-pur-300">
                 Already have an account?
                 <a href="{% url 'accounts:login' %}" class="font-semibold text-white hover:text-primary">Sign in</a>
             </p>
