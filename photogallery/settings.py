@@ -9,8 +9,7 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-if os.environ.get('RENDER'):
-    from .production_settings import *
+IS_RENDER = os.environ.get('RENDER') == 'true'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
@@ -18,11 +17,13 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    host.strip() for host in os.environ
-    .get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com')
-    .split(',')
-    if host.strip()
+if not IS_RENDER:
+    ALLOWED_HOSTS = [
+        host.strip() for host in os.environ
+        .get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com')
+        .split(',')
+        if host.strip()
+    ]
 ]
 # Application definition
 INSTALLED_APPS = [
@@ -163,12 +164,13 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+if not os.environ.get('RENDER'):
+    STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media files
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
@@ -249,3 +251,7 @@ cloudinary.config(
     api_secret=config('CLOUDINARY_API_SECRET'),
     secure=True
 )
+
+# Override with production settings if on Render
+if IS_RENDER:
+    from .production_settings import *

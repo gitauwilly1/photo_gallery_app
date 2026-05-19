@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: free
     autoDeploy: true
-    buildCommand: ./build.sh
+    buildCommand: bash build.sh
     startCommand: gunicorn photogallery.wsgi:application
     envVars:
       - key: PYTHON_VERSION
