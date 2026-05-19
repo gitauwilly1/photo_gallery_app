@@ -10,11 +10,16 @@ from .settings import BASE_DIR
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY')
 ALLOWED_HOSTS = [
-    host.strip() for host in os.environ
-    .get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com')
-    .split(',')
-    if host.strip()
+    'photo-gallery-app.onrender.com',
+    '.onrender.com',
+    'localhost',
+    '127.0.0.1',
 ]
+
+# Add any ALLOWED_HOSTS from environment variable
+if os.environ.get('ALLOWED_HOSTS'):
+    env_hosts = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '').split(',') if host.strip()]
+    ALLOWED_HOSTS.extend(env_hosts)
 
 # HTTPS settings
 SECURE_SSL_REDIRECT = True

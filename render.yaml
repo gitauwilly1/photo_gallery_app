@@ -20,7 +20,7 @@ services:
           name: photo-gallery-db
           property: connectionString
       - key: ALLOWED_HOSTS
-        value: photo-gallery-app.onrender.com,localhost,127.0.0.1
+        value: photo-gallery-app.onrender.com,.onrender.com,localhost,127.0.0.1
 
 databases:
   - name: photo-gallery-db
