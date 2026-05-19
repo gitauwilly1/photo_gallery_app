@@ -24,7 +24,14 @@ if not IS_RENDER:
         .split(',')
         if host.strip()
     ]
-]
+else:
+    ALLOWED_HOSTS = [
+        'photo-gallery-app.onrender.com',
+        '.onrender.com',
+        'localhost',
+        '127.0.0.1',
+    ]
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
