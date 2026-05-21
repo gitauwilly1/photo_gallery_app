@@ -20,7 +20,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 if not IS_RENDER:
     ALLOWED_HOSTS = [
         host.strip() for host in os.environ
-        .get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com')
+        .get('ALLOWED_HOSTS', 'localhost,127.0.0.1,https://photo-gallery-app-uvwe.onrender.com')
         .split(',')
         if host.strip()
     ]
@@ -89,13 +89,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'photogallery.wsgi.application'
 
-# Database - PostgreSQL
 DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
+}
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
